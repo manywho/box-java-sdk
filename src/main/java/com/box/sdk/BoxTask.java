@@ -68,7 +68,7 @@ public class BoxTask extends BoxResource {
         taskJSON.add("id", this.getID());
 
         JsonObject requestJSON = new JsonObject();
-        requestJSON.add("item", taskJSON);
+        requestJSON.add("task", taskJSON);
         requestJSON.add("assign_to", assignToJSON);
 
         URL url = ADD_TASK_ASSIGNMENT_URL_TEMPLATE.build(this.getAPI().getBaseURL());
