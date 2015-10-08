@@ -17,7 +17,7 @@ public class BoxTask extends BoxResource {
 
     private static final URLTemplate TASK_URL_TEMPLATE = new URLTemplate("tasks/%s");
     private static final URLTemplate GET_ASSIGNMENTS_URL_TEMPLATE = new URLTemplate("tasks/%s/assignments");
-    private static final URLTemplate ADD_TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("tasks_assignments");
+    private static final URLTemplate ADD_TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("task_assignments");
 
     /**
      * Constructs a BoxTask for a task with a given ID.
