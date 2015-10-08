@@ -44,12 +44,28 @@ public class BoxTask extends BoxResource {
      * @return information about the newly added task assignment
      */
     public BoxTaskAssignment.Info addAssignment(BoxUser assignTo) {
+        JsonObject assignToJSON = new JsonObject();
+        assignToJSON.add("id", assignTo.getID());
+
+        return this.addAssignment(assignToJSON);
+    }
+
+    /**
+     * Adds a new assignment to this task.
+     * @param login the login email address for the user this assignment is for
+     * @return information about the newly added task assignment
+     */
+    public BoxTaskAssignment.Info addAssignment(String login) {
+        JsonObject assignToJSON = new JsonObject();
+        assignToJSON.add("login", login);
+
+        return this.addAssignment(assignToJSON);
+    }
+
+    private BoxTaskAssignment.Info addAssignment(JsonObject assignToJSON) {
         JsonObject taskJSON = new JsonObject();
         taskJSON.add("type", "task");
         taskJSON.add("id", this.getID());
-
-        JsonObject assignToJSON = new JsonObject();
-        assignToJSON.add("id", assignTo.getID());
 
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("item", taskJSON);
