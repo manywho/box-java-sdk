@@ -469,6 +469,27 @@ public class BoxFolder extends BoxItem implements Iterable<BoxItem.Info> {
         };
     }
 
+    public Iterable<BoxItem.Info> search(final String query, final AdvancedSearchParams searchParams) {
+        return new Iterable<BoxItem.Info>() {
+            @Override
+            public Iterator<BoxItem.Info> iterator() {
+                QueryStringBuilder builder = new QueryStringBuilder();
+                if (query != null) {
+                    builder.appendParam("query", query);
+                }
+
+                builder.appendParam("ancestor_folder_ids", getID());
+
+                if (searchParams.hasMetadataFilters()) {
+                    builder.appendParam("mdfilters", searchParams.getMetadataFilters());
+                }
+
+                URL url = SEARCH_URL_TEMPLATE.buildWithQuery(getAPI().getBaseURL(), builder.toString());
+                return new BoxItemIterator(getAPI(), url);
+            }
+        };
+    }
+
     /**
      * Contains information about a BoxFolder.
      */
