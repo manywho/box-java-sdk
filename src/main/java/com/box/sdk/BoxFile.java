@@ -40,6 +40,8 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate GET_METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata");
     private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s");
     private static final URLTemplate UPDATE_METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s/%s");
+    private static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
+    private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
     private static final String DEFAULT_METADATA_TYPE = "properties";
     private static final int BUFFER_SIZE = 8192;
 
@@ -93,6 +95,40 @@ public class BoxFile extends BoxItem {
 
         BoxComment addedComment = new BoxComment(this.getAPI(), responseJSON.get("id").asString());
         return addedComment.new Info(responseJSON);
+    }
+
+    /**
+     * Adds a new task to this file. The task can have an optional message to include, and a due date
+     * @param action the action the task assignee will be prompted to do
+     * @param message an optional message to include with the task
+     * @param dueAt the day at which this task is due
+     * @return information about the newly added task
+     */
+    public BoxTask.Info addTask(String action, String message, Date dueAt) {
+        JsonObject itemJSON = new JsonObject();
+        itemJSON.add("type", "file");
+        itemJSON.add("id", this.getID());
+
+        JsonObject requestJSON = new JsonObject();
+        requestJSON.add("item", itemJSON);
+        requestJSON.add("action", action);
+
+        if (message != null) {
+            requestJSON.add("message", message);
+        }
+
+        if (dueAt != null) {
+            requestJSON.add("due_at", dueAt.toString());
+        }
+
+        URL url = ADD_TASK_URL_TEMPLATE.build(this.getAPI().getBaseURL());
+        BoxJSONRequest request = new BoxJSONRequest(this.getAPI(), url, "POST");
+        request.setBody(requestJSON.toString());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        BoxTask addedTask = new BoxTask(this.getAPI(), responseJSON.get("id").asString());
+        return addedTask.new Info(responseJSON);
     }
 
     /**
@@ -417,6 +453,29 @@ public class BoxFile extends BoxItem {
         }
 
         return comments;
+    }
+
+    /**
+     * Gets a list of any tasks on this file.
+     * @return a list of tasks on this file.
+     */
+    public List<BoxTask.Info> getTasks() {
+        URL url = GET_TASKS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        int totalCount = responseJSON.get("total_count").asInt();
+        List<BoxTask.Info> tasks = new ArrayList<BoxTask.Info>(totalCount);
+        JsonArray entries = responseJSON.get("entries").asArray();
+        for (JsonValue value : entries) {
+            JsonObject taskJSON = value.asObject();
+            BoxTask task = new BoxTask(this.getAPI(), taskJSON.get("id").asString());
+            BoxTask.Info info = task.new Info(taskJSON);
+            tasks.add(info);
+        }
+
+        return tasks;
     }
 
     /**
