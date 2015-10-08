@@ -28,6 +28,7 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import org.hamcrest.CustomMatcher;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
@@ -355,7 +356,7 @@ public class BoxFileTest {
 
         assertThat(addedCommentInfo.getMessage(), is(equalTo(expectedCommentMessage)));
         assertThat(uploadedFile.getComments(), hasItem(Matchers.<BoxComment.Info>hasProperty("ID",
-            equalTo(addedCommentInfo.getID()))));
+                equalTo(addedCommentInfo.getID()))));
 
         uploadedFile.delete();
     }
@@ -375,6 +376,13 @@ public class BoxFileTest {
         Metadata check1 = uploadedFile.getMetadata();
         Assert.assertNotNull(check1);
         Assert.assertEquals("bar", check1.get("/foo"));
+
+        assertThat(uploadedFile.getAllMetadata(), hasItem(new CustomMatcher<Metadata>("contains metadata") {
+            @Override
+            public boolean matches(Object item) {
+                return ((item instanceof Metadata) && ((Metadata) item).get("/foo").equals("bar"));
+            }
+        }));
 
         uploadedFile.delete();
     }
