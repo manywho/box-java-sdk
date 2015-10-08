@@ -76,6 +76,16 @@ public class Metadata {
      * @return this metadata object.
      */
     public Metadata add(String path, String value) {
+        return this.add(path, JsonValue.valueOf(value));
+    }
+
+    /**
+     * Adds a new metdata value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
+     * @return this metadata object.
+     */
+    public Metadata add(String path, JsonValue value) {
         this.values.add(this.pathToProperty(path), value);
         this.addOp("add", path, value);
         return this;
@@ -88,6 +98,16 @@ public class Metadata {
      * @return this metadata object.
      */
     public Metadata replace(String path, String value) {
+        return this.replace(path, JsonValue.valueOf(value));
+    }
+
+    /**
+     * Replaces an existing metdata value.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value.
+     * @return this metadata object.
+     */
+    public Metadata replace(String path, JsonValue value) {
         this.values.set(this.pathToProperty(path), value);
         this.addOp("replace", path, value);
         return this;
@@ -100,7 +120,7 @@ public class Metadata {
      */
     public Metadata remove(String path) {
         this.values.remove(this.pathToProperty(path));
-        this.addOp("remove", path, null);
+        this.addOp("remove", path, "");
         return this;
     }
 
@@ -125,7 +145,12 @@ public class Metadata {
         if (value == null) {
             return null;
         }
-        return value.asString();
+
+        if (value.isString()) {
+            return value.asString();
+        }
+
+        return value.toString();
     }
 
     /**
@@ -168,6 +193,16 @@ public class Metadata {
      * @param value the value to be set.
      */
     private void addOp(String op, String path, String value) {
+        this.addOp(op, path, JsonValue.valueOf(value));
+    }
+
+    /**
+     * Adds a patch operation.
+     * @param op the operation type. Must be add, replace, remove, or test.
+     * @param path the path that designates the key. Must be prefixed with a "/".
+     * @param value the value to be set.
+     */
+    private void addOp(String op, String path, JsonValue value) {
         if (this.operations == null) {
             this.operations = new JsonArray();
         }
