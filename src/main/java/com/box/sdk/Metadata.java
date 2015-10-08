@@ -46,6 +46,14 @@ public class Metadata {
     }
 
     /**
+     * Returns the name of the template used by the metadata object.
+     * @return the template name
+     */
+    public String getTemplate() {
+        return this.get("/$template");
+    }
+
+    /**
      * Returns the metadata type.
      * @return the metadata type.
      */
