@@ -98,22 +98,22 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Adds a new task to this file. The task can have an optional message to include, and a due date
-     * @param action the action the task assignee will be prompted to do
-     * @param message an optional message to include with the task
-     * @param dueAt the day at which this task is due
-     * @return information about the newly added task
+     * Adds a new task to this file. The task can have an optional message to include, and a due date.
+     * @param action the action the task assignee will be prompted to do.
+     * @param message an optional message to include with the task.
+     * @param dueAt the day at which this task is due.
+     * @return information about the newly added task.
      */
-    public BoxTask.Info addTask(String action, String message, Date dueAt) {
+    public BoxTask.Info addTask(BoxTask.Action action, String message, Date dueAt) {
         JsonObject itemJSON = new JsonObject();
         itemJSON.add("type", "file");
         itemJSON.add("id", this.getID());
 
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("item", itemJSON);
-        requestJSON.add("action", action);
+        requestJSON.add("action", action.toJSONString());
 
-        if (message != null) {
+        if (message != null && !message.isEmpty()) {
             requestJSON.add("message", message);
         }
 

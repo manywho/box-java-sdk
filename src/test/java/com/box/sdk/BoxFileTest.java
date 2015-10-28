@@ -425,7 +425,7 @@ public class BoxFileTest {
 
         InputStream uploadStream = new ByteArrayInputStream(fileBytes);
         BoxFile uploadedFile = rootFolder.uploadFile(uploadStream, fileName).getResource();
-        BoxTask.Info addedTaskInfo = uploadedFile.addTask("review", taskMessage, dueAt);
+        BoxTask.Info addedTaskInfo = uploadedFile.addTask(BoxTask.Action.REVIEW, taskMessage, dueAt);
 
         assertThat(addedTaskInfo.getMessage(), is(equalTo(taskMessage)));
         assertThat(dateFormat.format(addedTaskInfo.getDueAt()), is(equalTo(dateFormat.format(dueAt))));

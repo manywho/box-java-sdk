@@ -8,7 +8,8 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a task assignment on Box.
+ * Represents a task assignment on Box, which can be used to assign a task to a single user. There can be multiple
+ * assignments on a single task.
  */
 public class BoxTaskAssignment extends BoxResource {
 
@@ -78,7 +79,7 @@ public class BoxTaskAssignment extends BoxResource {
         private Date completedAt;
         private Date assignedAt;
         private Date remindedAt;
-        private String resolutionState;
+        private ResolutionState resolutionState;
         private BoxUser.Info assignedBy;
 
         /**
@@ -111,7 +112,7 @@ public class BoxTaskAssignment extends BoxResource {
 
         /**
          * Gets the item associated with this task.
-         * @return the item associated with this task
+         * @return the item associated with this task.
          */
         public BoxItem.Info getItem() {
             return this.item;
@@ -161,7 +162,7 @@ public class BoxTaskAssignment extends BoxResource {
          * Gets the current resolution state of the assignment.
          * @return the current resolution state of the assignment.
          */
-        public String getResolutionState() {
+        public ResolutionState getResolutionState() {
             return this.resolutionState;
         }
 
@@ -199,7 +200,7 @@ public class BoxTaskAssignment extends BoxResource {
                 } else if (memberName.equals("reminded_at")) {
                     this.remindedAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("resolution_state")) {
-                    this.resolutionState = value.asString();
+                    this.resolutionState = ResolutionState.fromJSONString(value.asString());
                 } else if (memberName.equals("assigned_by")) {
                     JsonObject userJSON = value.asObject();
                     String userID = userJSON.get("id").asString();
@@ -209,6 +210,55 @@ public class BoxTaskAssignment extends BoxResource {
             } catch (ParseException e) {
                 assert false : "A ParseException indicates a bug in the SDK.";
             }
+        }
+    }
+
+    /**
+     * Enumerates the possible resolution states that a task assignment can have.
+     */
+    public enum ResolutionState {
+        /**
+         * The task assignment has been completed.
+         */
+        COMPLETED ("completed"),
+
+        /**
+         * The task assignment is incomplete.
+         */
+        INCOMPLETE ("incomplete"),
+
+        /**
+         * The task assignment has been approved.
+         */
+        APPROVED ("approved"),
+
+        /**
+         * The task assignment has been rejected.
+         */
+        REJECTED ("rejected");
+
+        private final String jsonValue;
+
+        private ResolutionState(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static ResolutionState fromJSONString(String jsonValue) {
+            if (jsonValue.equals("completed")) {
+                return COMPLETED;
+            } else if (jsonValue.equals("incomplete")) {
+                return INCOMPLETE;
+            } else if (jsonValue.equals("approved")) {
+                return APPROVED;
+            } else if (jsonValue.equals("rejected")) {
+                return REJECTED;
+            } else {
+                throw new IllegalArgumentException("The provided JSON value isn't a valid ResolutionState.");
+            }
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
         }
     }
 }

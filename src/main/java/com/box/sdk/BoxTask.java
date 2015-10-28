@@ -11,7 +11,7 @@ import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 /**
- * Represents a task on Box.
+ * Represents a task on Box. Tasks can have a due date and can be assigned to a specific user.
  */
 public class BoxTask extends BoxResource {
 
@@ -83,8 +83,7 @@ public class BoxTask extends BoxResource {
 
     /**
      * Gets any assignments for this task.
-     * previous versions of their files.
-     * @return a list of previous file versions.
+     * @return a list of assignments for this task.
      */
     public List<BoxTaskAssignment.Info> getAssignments() {
         URL url = GET_ASSIGNMENTS_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
@@ -145,7 +144,7 @@ public class BoxTask extends BoxResource {
     public class Info extends BoxResource.Info {
         private BoxFile.Info item;
         private Date dueAt;
-        private String action;
+        private Action action;
         private String message;
         private List<BoxTaskAssignment.Info> taskAssignments;
         private boolean completed;
@@ -182,7 +181,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the file associated with this task.
-         * @return the file associated with this task
+         * @return the file associated with this task.
          */
         public BoxFile.Info getItem() {
             return this.item;
@@ -190,7 +189,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the date at which this task is due.
-         * @return the date at which this task is due
+         * @return the date at which this task is due.
          */
         public Date getDueAt() {
             return this.dueAt;
@@ -198,15 +197,15 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the action the task assignee will be prompted to do.
-         * @return the action the task assignee will be prompted to do
+         * @return the action the task assignee will be prompted to do.
          */
-        public String getAction() {
+        public Action getAction() {
             return this.action;
         }
 
         /**
          * Gets the message that will be included with this task.
-         * @return the message that will be included with this task
+         * @return the message that will be included with this task.
          */
         public String getMessage() {
             return this.message;
@@ -214,7 +213,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the collection of task assignments associated with this task.
-         * @return the collection of task assignments associated with this task
+         * @return the collection of task assignments associated with this task.
          */
         public List<BoxTaskAssignment.Info> getTaskAssignments() {
             return this.taskAssignments;
@@ -222,7 +221,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets whether or not this task has been completed.
-         * @return whether or not this task has been completed
+         * @return whether or not this task has been completed.
          */
         public boolean isCompleted() {
             return this.completed;
@@ -230,7 +229,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets the user who created this task.
-         * @return the user who created this task
+         * @return the user who created this task.
          */
         public BoxUser.Info getCreatedBy() {
             return this.createdBy;
@@ -238,7 +237,7 @@ public class BoxTask extends BoxResource {
 
         /**
          * Gets when this task was created.
-         * @return when this task was created
+         * @return when this task was created.
          */
         public Date getCreatedAt() {
             return this.createdAt;
@@ -259,7 +258,7 @@ public class BoxTask extends BoxResource {
                 } else if (memberName.equals("due_at")) {
                     this.dueAt = BoxDateFormat.parse(value.asString());
                 } else if (memberName.equals("action")) {
-                    this.action = value.asString();
+                    this.action = Action.fromJSONString(value.asString());
                 } else if (memberName.equals("message")) {
                     this.message = value.asString();
                 } else if (memberName.equals("task_assignment_collection")) {
@@ -292,6 +291,34 @@ public class BoxTask extends BoxResource {
             }
 
             return taskAssignmentCollection;
+        }
+    }
+
+    /**
+     * Enumerates the possible actions that a task can have.
+     */
+    public enum Action {
+        /**
+         * The task must be reviewed.
+         */
+        REVIEW ("review");
+
+        private final String jsonValue;
+
+        private Action(String jsonValue) {
+            this.jsonValue = jsonValue;
+        }
+
+        static Action fromJSONString(String jsonValue) {
+            if (jsonValue.equals("review")) {
+                return REVIEW;
+            } else {
+                throw new IllegalArgumentException("The provided JSON value isn't a valid Action.");
+            }
+        }
+
+        String toJSONString() {
+            return this.jsonValue;
         }
     }
 }
