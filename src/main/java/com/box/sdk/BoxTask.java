@@ -1,14 +1,14 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a task on Box. Tasks can have a due date and can be assigned to a specific user.
@@ -40,16 +40,37 @@ public class BoxTask extends BoxResource {
 
     /**
      * Adds a new assignment to this task.
-     * @param assignTo the user to assign the assignment to.
-     * @return information about the newly added task assignment.
+     * @param assignTo the user to assign the assignment to
+     * @return information about the newly added task assignment
      */
     public BoxTaskAssignment.Info addAssignment(BoxUser assignTo) {
+        JsonObject assignToJSON = new JsonObject();
+        assignToJSON.add("id", assignTo.getID());
+
+        return this.addAssignment(assignToJSON);
+    }
+
+    /**
+     * Adds a new assignment to this task.
+     * @param login the login email address for the user this assignment is for
+     * @return information about the newly added task assignment
+     */
+    public BoxTaskAssignment.Info addAssignment(String login) {
+        JsonObject assignToJSON = new JsonObject();
+        assignToJSON.add("login", login);
+
+        return this.addAssignment(assignToJSON);
+    }
+
+    /**
+     * Adds a new assignment to this task.
+     * @param assignToJSON the user to assign the assignment to.
+     * @return information about the newly added task assignment.
+     */
+    public BoxTaskAssignment.Info addAssignment(JsonObject assignToJSON) {
         JsonObject taskJSON = new JsonObject();
         taskJSON.add("type", "task");
         taskJSON.add("id", this.getID());
-
-        JsonObject assignToJSON = new JsonObject();
-        assignToJSON.add("id", assignTo.getID());
 
         JsonObject requestJSON = new JsonObject();
         requestJSON.add("task", taskJSON);
