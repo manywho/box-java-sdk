@@ -1,5 +1,9 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,10 +15,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
-
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 
 /**
@@ -57,6 +57,7 @@ public class BoxFile extends BoxItem {
     private static final URLTemplate COPY_URL_TEMPLATE = new URLTemplate("files/%s/copy");
     private static final URLTemplate ADD_COMMENT_URL_TEMPLATE = new URLTemplate("comments");
     private static final URLTemplate GET_COMMENTS_URL_TEMPLATE = new URLTemplate("files/%s/comments");
+    private static final URLTemplate GET_METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata");
     private static final URLTemplate METADATA_URL_TEMPLATE = new URLTemplate("files/%s/metadata/%s/%s");
     private static final URLTemplate ADD_TASK_URL_TEMPLATE = new URLTemplate("tasks");
     private static final URLTemplate GET_TASKS_URL_TEMPLATE = new URLTemplate("files/%s/tasks");
@@ -604,6 +605,28 @@ public class BoxFile extends BoxItem {
     }
 
     /**
+     * Gets all the metadata associated with the file.
+     * @return all the metadata returned from the server
+     */
+    public List<Metadata> getAllMetadata() {
+        URL url = GET_METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        JsonObject responseJSON = JsonObject.readFrom(response.getJSON());
+
+        JsonArray entries = responseJSON.get("entries").asArray();
+        int totalCount = entries.size();
+        List<Metadata> metadataEntries = new ArrayList<Metadata>(totalCount);
+        for (JsonValue value : entries) {
+            JsonObject metadataJSON = value.asObject();
+            Metadata metadata = new Metadata(metadataJSON);
+            metadataEntries.add(metadata);
+        }
+
+        return metadataEntries;
+    }
+
+    /**
      * Gets the file properties metadata.
      * @return the metadata returned from the server.
      */
@@ -649,6 +672,20 @@ public class BoxFile extends BoxItem {
 
         URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
                                                 scope, metadata.getTemplateName());
+        BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
+        request.addHeader("Content-Type", "application/json-patch+json");
+        request.setBody(metadata.getPatch());
+        BoxJSONResponse response = (BoxJSONResponse) request.send();
+        return new Metadata(JsonObject.readFrom(response.getJSON()));
+    }
+
+    /**
+     * Updates the file metadata.
+     * @param metadata the new metadata values.
+     * @return the metadata returned from the server.
+     */
+    public Metadata updateMetadata(String scope, Metadata metadata) {
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, metadata.get("/$template"));
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
         request.setBody(metadata.getPatch());
