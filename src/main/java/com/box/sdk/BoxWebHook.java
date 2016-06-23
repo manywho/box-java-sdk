@@ -14,6 +14,7 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
+
 /**
  * Box WebHook resource.
  *
@@ -66,6 +67,7 @@ public class BoxWebHook extends BoxResource {
      * Maps a {@link Trigger} to its {@link Trigger#getValue()}.
      */
     private static final Mapper<String, BoxWebHook.Trigger> TRIGGER_TO_VALUE = new Mapper<String, Trigger>() {
+
 
         @Override
         public String map(Trigger input) {
