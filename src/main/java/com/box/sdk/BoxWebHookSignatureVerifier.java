@@ -91,7 +91,7 @@ public class BoxWebHookSignatureVerifier {
      * @return true, if given payload is successfully verified against primary and secondary signatures, false otherwise
      */
     public boolean verify(String signatureVersion, String signatureAlgorithm, String primarySignature,
-            String secondarySignature, String webHookPayload, String deliveryTimestamp) {
+                          String secondarySignature, String webHookPayload, String deliveryTimestamp) {
 
         // enforce versions supported by this implementation
         if (!SUPPORTED_VERSIONS.contains(signatureVersion)) {
@@ -136,7 +136,7 @@ public class BoxWebHookSignatureVerifier {
      * @return true if verification passed
      */
     private boolean verify(String key, BoxSignatureAlgorithm actualAlgorithm, String actualSignature,
-            String webHookPayload, String deliveryTimestamp) {
+                           String webHookPayload, String deliveryTimestamp) {
         if (actualSignature == null) {
             return false;
         }
@@ -178,7 +178,7 @@ public class BoxWebHookSignatureVerifier {
      * @return calculated signature
      */
     private byte[] signRaw(BoxSignatureAlgorithm algorithm, String key, String webHookPayload,
-            String deliveryTimestamp) {
+                           String deliveryTimestamp) {
         Mac mac = MAC_POOL.acquire(algorithm.javaProviderName);
         try {
             mac.init(new SecretKeySpec(key.getBytes(UTF_8), algorithm.javaProviderName));
