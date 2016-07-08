@@ -446,6 +446,63 @@ public class BoxWebHook extends BoxResource {
     }
 
     /**
+<<<<<<< 6067660508465c3cfd4e945f0e7a6139ca6cfa36
+=======
+     * Supported {@link Target} types.
+     *
+     * @author Stanislav Dvorscak
+     *
+     */
+    public enum TargetType {
+
+        /**
+         * WebHook for {@link BoxFolder} target type.
+         */
+        FOLDER("folder"),
+
+        /**
+         * WebHook for {@link BoxFile} target type.
+         */
+        FILE("file");
+
+        /**
+         * @see #getValue()
+         */
+        private final String value;
+
+        /**
+         * Constructor.
+         *
+         * @param value
+         *            {@link #getValue()}
+         */
+        TargetType(String value) {
+            this.value = value;
+        }
+
+        /**
+         * @return String representation for {@link TargetType}.
+         */
+        public String getValue() {
+            return this.value;
+        }
+
+        /**
+         * @param value value to get the TargetType enum value for
+         * @return TargetType for given value
+         */
+        public static TargetType fromValue(String value) {
+            for (TargetType targetType : TargetType.values()) {
+                if (targetType.getValue().equals(value)) {
+                    return targetType;
+                }
+            }
+            throw new IllegalArgumentException("No TargetType for value: " + value);
+        }
+    }
+
+    /**
+>>>>>>> BoxWebHook test + fixes related
      * A Box related triggers.
      */
     public enum Trigger {
