@@ -137,7 +137,7 @@ public abstract class BoxResourceIterable<T> implements Iterable<T> {
             } else {
                 this.markerNext = null;
             }
-            
+
             this.page = pageBody.get(BODY_PARAMETER_ENTRIES).asArray();
             this.pageCursor = 0;
         }
