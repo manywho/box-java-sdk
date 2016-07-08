@@ -61,6 +61,7 @@ public class MacPool {
             synchronized (result) {
                 result.reset();
             }
+
             return result;
         }
 
