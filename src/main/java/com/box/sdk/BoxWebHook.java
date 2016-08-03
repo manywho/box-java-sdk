@@ -14,6 +14,10 @@ import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
+
 /**
  * Box WebHook resource.
  *
