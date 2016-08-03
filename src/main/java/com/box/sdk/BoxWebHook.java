@@ -1,20 +1,15 @@
 package com.box.sdk;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
 import com.box.sdk.BoxAPIRequest.HttpMethod;
 import com.box.sdk.internal.utils.CollectionUtils;
 import com.box.sdk.internal.utils.CollectionUtils.Mapper;
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Box WebHook resource.
@@ -629,7 +624,27 @@ public class BoxWebHook extends BoxResource {
         /**
          * Triggered when a {@link BoxComment} was deleted.
          */
-        COMMENT_DELETED("COMMENT.DELETED", TargetType.FILE);
+        COMMENT_DELETED("COMMENT.DELETED", TargetType.FILE),
+
+        /**
+         * Triggered when a {@link BoxTask} was created.
+         */
+        FILE_TASK_ASSIGNMENT_CREATED("TASK_ASSIGNMENT.CREATED", TargetType.FILE),
+
+        /**
+         * Triggered when a {@link BoxTask} was created.
+         */
+        FILE_TASK_ASSIGNMENT_UPDATED("TASK_ASSIGNMENT.UPDATED", TargetType.FILE),
+
+        /**
+         * Triggered when a {@link BoxTask} was created.
+         */
+        FOLDER_TASK_ASSIGNMENT_CREATED("TASK_ASSIGNMENT.CREATED", TargetType.FOLDER),
+
+        /**
+         * Triggered when a {@link BoxTask} was updated.
+         */
+        FOLDER_TASK_ASSIGNMENT_UPDATED("TASK_ASSIGNMENT.UPDATED", TargetType.FOLDER);
 
         /**
          * @see #getValue()
