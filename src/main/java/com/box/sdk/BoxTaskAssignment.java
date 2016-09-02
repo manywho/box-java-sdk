@@ -1,11 +1,11 @@
 package com.box.sdk;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents a task assignment on Box, which can be used to assign a task to a single user. There can be multiple
@@ -14,7 +14,7 @@ import com.eclipsesource.json.JsonValue;
 @BoxResourceType("task_assignment")
 public class BoxTaskAssignment extends BoxResource {
 
-    private static final URLTemplate TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("tasks_assignments/%s");
+    private static final URLTemplate TASK_ASSIGNMENT_URL_TEMPLATE = new URLTemplate("task_assignments/%s");
 
     /**
      * Constructs a BoxTaskAssignment for a task assignment with a given ID.
