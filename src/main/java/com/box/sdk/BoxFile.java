@@ -1,9 +1,5 @@
 package com.box.sdk;
 
-import com.eclipsesource.json.JsonArray;
-import com.eclipsesource.json.JsonObject;
-import com.eclipsesource.json.JsonValue;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +12,9 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.eclipsesource.json.JsonArray;
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 /**
  * Represents an individual file on Box. This class can be used to download a file's contents, upload new versions, and
@@ -758,12 +757,15 @@ public class BoxFile extends BoxItem {
     }
 
     /**
-     * Updates the file metadata.
+     *
+     * @param scope e.g. enterprise
      * @param metadata the new metadata values.
      * @return the metadata returned from the server.
      */
     public Metadata updateMetadata(String scope, Metadata metadata) {
-        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope, metadata.get("/$template"));
+        URL url = METADATA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), scope,
+                metadata.get("/$template"));
+
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "PUT");
         request.addHeader("Content-Type", "application/json-patch+json");
         request.setBody(metadata.getPatch());

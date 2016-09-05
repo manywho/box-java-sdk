@@ -1,12 +1,14 @@
 package com.box.sdk;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Represents an metadata template on Box. This class can be used to list and display templates inside an enterprise.
@@ -70,7 +72,9 @@ public class BoxMetadataTemplate extends BoxResource {
      * @return info about this metadata template.
      */
     public BoxMetadataTemplate.Info getInfo() {
-        URL url = METADATA_TEMPLATE_SCHEMA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(), this.getTemplate());
+        URL url = METADATA_TEMPLATE_SCHEMA_URL_TEMPLATE.build(this.getAPI().getBaseURL(), this.getID(),
+                this.getTemplate());
+
         BoxAPIRequest request = new BoxAPIRequest(this.getAPI(), url, "GET");
         BoxJSONResponse response = (BoxJSONResponse) request.send();
         return new Info(response.getJSON());

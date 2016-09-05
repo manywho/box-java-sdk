@@ -1,11 +1,11 @@
 package com.box.sdk;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents a Box metadata template field.
