@@ -563,7 +563,20 @@ public class  BoxWebHook extends BoxResource {
          * Triggered when a {@link BoxComment} was deleted.
          */
         COMMENT_DELETED("COMMENT.DELETED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxTaskAssignment} was created.
+         */
+        TASK_ASSIGNMENT_CREATED("TASK_ASSIGNMENT.CREATED",
+                BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class)),
+
+        /**
+         * Triggered when a {@link BoxTaskAssignment} was updated.
+         */
+        TASK_ASSIGNMENT_UPDATED("TASK_ASSIGNMENT.UPDATED",
                 BoxResource.getResourceType(BoxFolder.class), BoxResource.getResourceType(BoxFile.class));
+
 
         /**
          * @see #getValue()
